@@ -6,24 +6,24 @@ namespace InterProcessCommunication.InterProcessCommunication
 {
     internal interface IClient
     {
-        bool connect(string pServerAddr);
-        bool disconnect();
-        void asyncWaitForMsg(); // Wait messages from the server
-        void asyncWaitForInput();  // Wait messages from the user
+        abstract bool Connect(string pServerAddr);
+        abstract bool Disconnect();
+        abstract void AsyncWaitForMsg(); // Wait messages from the server
+        abstract void AsyncWaitForInput();  // Wait messages from the user
         /*
             Properties
          */
-        int ConnectionId
+        abstract int ConnectionId
         {
             get;
         }
 
-        bool IsConnected
+        abstract bool IsConnected
         {
             get;
         }
 
-        string ServerAddr
+        abstract string ServerAddr
         {
             get;
         }
