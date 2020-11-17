@@ -5,9 +5,9 @@ namespace InterProcessCommunication
 {
     internal class ClientImpl : IClient
     {
-        private int mConnectionId;
-        private bool mIsConnected;
-        private string mServerAddr;
+        private readonly int mConnectionId;
+        private readonly bool mIsConnected;
+        private readonly string mServerAddr;
 
         public ClientImpl()
         {
@@ -18,7 +18,7 @@ namespace InterProcessCommunication
 
         ~ClientImpl()
         {
-            if (mIsConnected) { disconnect(); }
+            if (mIsConnected) { Disconnect(); }
         }
 
         public int ConnectionId
@@ -36,26 +36,27 @@ namespace InterProcessCommunication
             get { return mServerAddr; }
         }
 
-        public void asyncWaitForMsg()
+        public void AsyncWaitForMsg()
         {
             Console.WriteLine("asyncWaitForMsg from the other end");
         }
 
-        public void asyncWaitForInput()
+        public void AsyncWaitForInput()
         {
             Console.WriteLine("asyncWaitForInput from the user ");
         }
 
-        public bool connect(string pServerAddr)
+        public bool Connect(string pServerAddr)
         {
             Console.WriteLine("Connecting to server: ", pServerAddr);
             return true;
         }
 
-        public bool disconnect()
+        public bool Disconnect()
         {
             Console.WriteLine("Disconnecting");
             return true;
         }
+
     }
 }
