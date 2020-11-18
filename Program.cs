@@ -57,15 +57,24 @@ namespace InterProcessCommunication
                     Thread clientReceiveTH = new Thread(client.Receive);
                     clientReceiveTH.Start();
 
+                    client.sendSampleData();
+
                     while (true)
                     {
                         // read input from the console
                         Console.WriteLine("Write message here (press enter to send): ");
-                        // send it to the server
                         string inputText = Console.ReadLine();
-                        client.Send(inputText + "<EOF>");
                         
-
+                        if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            // send it to the server
+                            client.Send(inputText);
+                        }
+                        // send it to the server
                     }
                 }
             }
@@ -75,20 +84,14 @@ namespace InterProcessCommunication
                 
                 Console.WriteLine("<Running in server mode>");
 
-                Thread listeningTH;
-
                 if (args.Length < 3)
                 {
-                    // server.Listening("", Int32.Parse(args[1]));
-                    listeningTH = new Thread( () => server.Listening("", Int32.Parse(args[1])));
+                   server.Listening("", int.Parse(args[1]));
                 }
                 else
                 {
-                   // server.Listening(args[1], Int32.Parse(args[2]));
-                    listeningTH = new Thread( () => server.Listening(args[1], Int32.Parse(args[2])));
+                    server.Listening(args[1], Int32.Parse(args[2]));
                 }
-
-                listeningTH.Start();
 
                 Thread serverReceiveTH = new Thread(server.Receive);
                 serverReceiveTH.Start();
@@ -96,12 +99,19 @@ namespace InterProcessCommunication
                 // Read input from console
                 while (true)
                 {
-                    // send it to the client
-                    Console.WriteLine("Write message here (press enter to send): ");
-                    // send it to the server
+                    Console.WriteLine("Write message here (press enter to send or :x Exit): ");
                     string inputText = Console.ReadLine();
-                    server.Send(inputText + "<EOF>");
+                    if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        server.Send(inputText);
+                    }
                 }
+
+                server.sendSampleData();
             }
             else
             {

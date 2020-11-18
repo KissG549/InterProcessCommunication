@@ -4,6 +4,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
+using System.Text.Json;
+using System.Runtime.Serialization;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace InterProcessCommunication
 {
@@ -143,12 +147,14 @@ namespace InterProcessCommunication
 
                     // Process with the incoming data here
 
-                    // TODO
-
                     Console.WriteLine(
                          "Arrived {0} bytes from socket.\n Data: {1}",
                          mMessage.Length,
                          mMessage);
+
+                    // Process with the incoming data here
+                    // Data exchange, decoding
+                    DataEncoderImpl.Decapsulate(mMessage);
                 }
             
             }
@@ -198,5 +204,26 @@ namespace InterProcessCommunication
             }
         }
 
+        public void sendSampleData()
+        {
+            Person samplePerson = new Person
+            {
+                Name = "First Person",
+                Age = 30,
+                Height = 170
+            };
+
+            Knowledge sampleKnowledge = new Knowledge
+            {
+                MotivationLevel = 11,
+                Background = 8,
+                ExperienceLevel = 10
+            };
+
+            string jsonString = JsonSerializer.Serialize( new { samplePerson, sampleKnowledge });
+
+            Console.WriteLine(JsonSerializer.Serialize(samplePerson));
+            Send(jsonString);
+        }
     }
 }

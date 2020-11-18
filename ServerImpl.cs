@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 
 /*
@@ -33,7 +34,7 @@ namespace InterProcessCommunication
         /*
             mre is used to block and release threads manually
          */
-        public static ManualResetEvent mMre = new ManualResetEvent(false);
+        public ManualResetEvent mMre = new ManualResetEvent(false);
 
         private Socket mConnectedClient;
 
@@ -73,26 +74,21 @@ namespace InterProcessCommunication
                 listener.Bind(localEndPoint);
                 listener.Listen(100);
                 
-                 while(true)
+                Console.WriteLine("Listening on {0} : {1}", ipAddress.ToString(), pPortNumber);
+                Console.WriteLine("Waiting for new connection...");
+
+                if(mConnectedClient != null && mConnectedClient.Connected)
                 {
-                    mMre.Reset();
-
-                    Console.WriteLine("Listening on {0} : {1}", ipAddress.ToString(), pPortNumber);
-                    Console.WriteLine("Waiting for new connection...");
-
-                    if(mConnectedClient.Connected)
-                    {
-                        mConnectedClient.Shutdown(SocketShutdown.Both);
-                        mConnectedClient.Close();
-                        mConnectedClient.Dispose();
-                    }
-                    mConnectedClient = listener.Accept();
-
-                    Console.WriteLine(
-                            "Accepted connection from {0}",
-                            ((IPEndPoint)mConnectedClient.RemoteEndPoint).Address);
-
+                    mConnectedClient.Shutdown(SocketShutdown.Both);
+                    mConnectedClient.Close();
+                    mConnectedClient.Dispose();
                 }
+                mConnectedClient = listener.Accept();
+
+                Console.WriteLine(
+                        "Accepted connection from {0}",
+                        ((IPEndPoint)mConnectedClient.RemoteEndPoint).Address);
+                
             } 
             catch(Exception e)
             {
@@ -105,17 +101,21 @@ namespace InterProcessCommunication
         public void Receive()
         {
             SocketStateObject state = new SocketStateObject();
-            
+            state.mClientSocket = mConnectedClient;
+
             while (true)
             {
-                System.Threading.Thread.Sleep(10);
-                state.mClientSocket = mConnectedClient;
-
+                if ( mConnectedClient == null || mConnectedClient.Available <= 0)
+                {
+                    System.Threading.Thread.Sleep(10);
+                    continue;
+                }
                 try
                 {
+                    state.mSb.Clear();
                     ReadSocket(mConnectedClient, state);
                 }
-                catch(Exception e)
+                 catch (Exception e)
                 {
                     Console.WriteLine(
                         "Can't receive data from the server: {0}",
@@ -128,9 +128,10 @@ namespace InterProcessCommunication
         {
             string message = string.Empty;
 
-            SocketStateObject state = pStateObject;
-            Socket handler = pSocket;
-
+            if (pSocket == null)
+            {
+                return;
+            }
             // Read data from the socket
             int bytesRead = 0;
             try
@@ -139,8 +140,7 @@ namespace InterProcessCommunication
             }
             catch(Exception e)
             {
-                Console.WriteLine("Can't read data from remote end: {0} ");
-                pSocket.Shutdown(SocketShutdown.Both);
+                Console.WriteLine("Can't read data from remote end ");
                 pSocket.Close();
                 bytesRead = 0;
                 return;
@@ -161,14 +161,15 @@ namespace InterProcessCommunication
 
                 message = pStateObject.mSb.ToString();
 
-                    // Process with the incoming data here
-
-                    // TODO
 
                 Console.WriteLine(
                     "Arrived {0} bytes from socket.\n Data: {1}", 
                     message.Length, 
                     message);
+
+                // Process with the incoming data here
+                // Data exchange, decoding
+                DataEncoderImpl.Decapsulate(message);
             }
         }
 
@@ -203,6 +204,28 @@ namespace InterProcessCommunication
             {
                 Console.WriteLine("Can't send data to the client.");
             }
+        }
+
+        public void sendSampleData()
+        {
+            Person samplePerson = new Person
+            {
+                Name = "Second Person",
+                Age = 40,
+                Height = 180
+            };
+
+            Knowledge sampleKnowledge = new Knowledge
+            {
+                MotivationLevel = 15,
+                Background = 6,
+                ExperienceLevel = 14
+            };
+
+            string jsonString = JsonSerializer.Serialize(new { sampleKnowledge, samplePerson });
+
+            Console.WriteLine(JsonSerializer.Serialize(samplePerson));
+            Send(jsonString);
         }
     }
 }
