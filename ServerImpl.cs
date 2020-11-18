@@ -33,8 +33,21 @@ namespace InterProcessCommunication
         /*
             mre is used to block and release threads manually
          */
-        public static ManualResetEvent mre = new ManualResetEvent(false);
-      
+        public static ManualResetEvent mMre = new ManualResetEvent(false);
+
+        public List<Socket> mConnectedClients = new List<Socket>();
+
+        ~ServerImpl()
+        {
+            foreach( Socket client in mConnectedClients )
+            {
+                if( client.Connected )
+                {
+                    client.Shutdown(SocketShutdown.Both);
+                    client.Close();
+                }
+            }
+        }
         public void Listening(string pIPAddress, int pPortNumber)
         {
             /*
@@ -65,7 +78,7 @@ namespace InterProcessCommunication
                 
                 while(true)
                 {
-                    mre.Reset();
+                    mMre.Reset();
 
                     Console.WriteLine("Listening on {0} : {1}", ipAddress.ToString(), pPortNumber);
                     Console.WriteLine("Waiting for connection...");
@@ -74,7 +87,7 @@ namespace InterProcessCommunication
                         listener);
 
                     // Wait until a connection is made before continuing.  
-                    mre.WaitOne();
+                    mMre.WaitOne();
                 }
             } 
             catch(Exception e)
@@ -91,14 +104,16 @@ namespace InterProcessCommunication
         public void AcceptCallback(IAsyncResult pAr)
         {
             // Signal the main thread to continue.  
-            mre.Set();
+            mMre.Set();
 
+            // Get the socket that handles the client request.
             Socket listener = (Socket)pAr.AsyncState;
-            Socket handler = listener.EndAccept(pAr);
+            Socket clientSocket = listener.EndAccept(pAr);
+            mConnectedClients.Add(clientSocket);
 
             SocketStateObject state = new SocketStateObject();
-            state.mClientSocket = handler;
-            handler.BeginReceive(
+            state.mClientSocket = clientSocket;
+            clientSocket.BeginReceive(
                 state.mBuffer, 
                 0, 
                 SocketStateObject.mBufferSize, 
@@ -108,17 +123,30 @@ namespace InterProcessCommunication
         }
         public void ReadCallback(IAsyncResult pAr)
         {
-            string content = "";
+            string content = string.Empty;
 
             SocketStateObject state = (SocketStateObject)pAr.AsyncState;
             Socket handler = state.mClientSocket;
 
             // Read data from the socket
-            int bytesRead = handler.EndReceive(pAr);
+            int bytesRead = 0;
+            try
+            {
+                bytesRead = handler.EndReceive(pAr);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(
+                    "Can't read data from remote end: {0} ", 
+                    e.ToString()
+                    );
+                bytesRead = 0;
+            }
 
             if( bytesRead > 0 )
             {
                 state.mSb.Append(Encoding.ASCII.GetString(state.mBuffer, 0, bytesRead));
+                content = state.mSb.ToString();
 
                 if(content.IndexOf("<EOF>") > -1)
                 {
@@ -164,8 +192,6 @@ namespace InterProcessCommunication
                 int byteSent = handler.EndSend(pAr);
                 Console.WriteLine("Sent {0} bytes to client.", byteSent);
 
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
             }
             catch( Exception e)
             {

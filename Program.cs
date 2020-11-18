@@ -32,8 +32,14 @@ namespace InterProcessCommunication
 
                 try
                 {
-                    client.Connect(args[1]);
-                    // connectionList.append( client.getConnectionId() );
+                    int colonIndex = args[1].IndexOf(':');
+                    if(colonIndex == -1)
+                    {
+                        throw new ArgumentException("Invalid host:port format");
+                    }
+                    string host = args[1].Substring(0, colonIndex);
+                    string port = args[1].Substring(colonIndex + 1);
+                    client.Connect(host, Int32.Parse(port));
                 }
                 catch (Exception e)
                 {
@@ -43,7 +49,7 @@ namespace InterProcessCommunication
                 if (client.IsConnected)
                 {
                     // client.asyncWaitForMsg(dataProcessCallback);
-                    client.AsyncWaitForInput();
+                    // client.AsyncWaitForInput();
                 }
             }
             else if( args[0] == "-s" )
