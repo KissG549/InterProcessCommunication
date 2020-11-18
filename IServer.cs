@@ -8,10 +8,7 @@ namespace InterProcessCommunication
     interface IServer
     {
         abstract void Listening(string pIPAddress, int pPortNumber);
-        abstract void AcceptCallback(IAsyncResult pAr);
-        abstract void ReadCallback(IAsyncResult pAr);
-
-        abstract void Send(Socket pHandler, string data);
+        abstract void Send(string data);
 
         abstract void SendCallBack(IAsyncResult pAr);
     }

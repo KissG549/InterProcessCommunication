@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace InterProcessCommunication
 {
@@ -28,8 +29,9 @@ namespace InterProcessCommunication
             }
             else if( args[0] == "-c" )
             {
-                var client = new ClientImpl();
+                ClientImpl client = new ClientImpl();
 
+                Console.WriteLine("<Running in client mode>");
                 try
                 {
                     int colonIndex = args[1].IndexOf(':');
@@ -39,7 +41,11 @@ namespace InterProcessCommunication
                     }
                     string host = args[1].Substring(0, colonIndex);
                     string port = args[1].Substring(colonIndex + 1);
-                    client.Connect(host, Int32.Parse(port));
+                    while(! client.Connect(host, Int32.Parse(port)) )
+                    {
+                        Console.WriteLine("Trying to connect...");
+                        System.Threading.Thread.Sleep(1000);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -48,20 +54,53 @@ namespace InterProcessCommunication
 
                 if (client.IsConnected)
                 {
-                    // client.asyncWaitForMsg(dataProcessCallback);
-                    // client.AsyncWaitForInput();
+                    Thread clientReceiveTH = new Thread(client.Receive);
+                    clientReceiveTH.Start();
+
+                    while (true)
+                    {
+                        // read input from the console
+                        Console.WriteLine("Write message here (press enter to send): ");
+                        // send it to the server
+                        string inputText = Console.ReadLine();
+                        client.Send(inputText + "<EOF>");
+                        
+
+                    }
                 }
             }
             else if( args[0] == "-s" )
             {
                 ServerImpl server = new ServerImpl();
+                
+                Console.WriteLine("<Running in server mode>");
+
+                Thread listeningTH;
+
                 if (args.Length < 3)
                 {
-                    server.Listening("", Int32.Parse(args[1]));
+                    // server.Listening("", Int32.Parse(args[1]));
+                    listeningTH = new Thread( () => server.Listening("", Int32.Parse(args[1])));
                 }
                 else
                 {
-                    server.Listening(args[1], Int32.Parse(args[2]));
+                   // server.Listening(args[1], Int32.Parse(args[2]));
+                    listeningTH = new Thread( () => server.Listening(args[1], Int32.Parse(args[2])));
+                }
+
+                listeningTH.Start();
+
+                Thread serverReceiveTH = new Thread(server.Receive);
+                serverReceiveTH.Start();
+
+                // Read input from console
+                while (true)
+                {
+                    // send it to the client
+                    Console.WriteLine("Write message here (press enter to send): ");
+                    // send it to the server
+                    string inputText = Console.ReadLine();
+                    server.Send(inputText + "<EOF>");
                 }
             }
             else

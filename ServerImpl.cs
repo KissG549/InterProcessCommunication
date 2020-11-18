@@ -35,18 +35,15 @@ namespace InterProcessCommunication
          */
         public static ManualResetEvent mMre = new ManualResetEvent(false);
 
-        public List<Socket> mConnectedClients = new List<Socket>();
+        private Socket mConnectedClient;
 
         ~ServerImpl()
         {
-            foreach( Socket client in mConnectedClients )
-            {
-                if( client.Connected )
-                {
-                    client.Shutdown(SocketShutdown.Both);
-                    client.Close();
-                }
-            }
+             if(mConnectedClient.Connected )
+             {
+                  mConnectedClient.Shutdown(SocketShutdown.Both);
+                  mConnectedClient.Close();
+             }
         }
         public void Listening(string pIPAddress, int pPortNumber)
         {
@@ -76,18 +73,25 @@ namespace InterProcessCommunication
                 listener.Bind(localEndPoint);
                 listener.Listen(100);
                 
-                while(true)
+                 while(true)
                 {
                     mMre.Reset();
 
                     Console.WriteLine("Listening on {0} : {1}", ipAddress.ToString(), pPortNumber);
-                    Console.WriteLine("Waiting for connection...");
-                    listener.BeginAccept(
-                        new AsyncCallback(AcceptCallback), 
-                        listener);
+                    Console.WriteLine("Waiting for new connection...");
 
-                    // Wait until a connection is made before continuing.  
-                    mMre.WaitOne();
+                    if(mConnectedClient.Connected)
+                    {
+                        mConnectedClient.Shutdown(SocketShutdown.Both);
+                        mConnectedClient.Close();
+                        mConnectedClient.Dispose();
+                    }
+                    mConnectedClient = listener.Accept();
+
+                    Console.WriteLine(
+                            "Accepted connection from {0}",
+                            ((IPEndPoint)mConnectedClient.RemoteEndPoint).Address);
+
                 }
             } 
             catch(Exception e)
@@ -96,91 +100,93 @@ namespace InterProcessCommunication
                     "Can't bind the socket: {0}",
                     e.ToString());
             }
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
         }
 
-        public void AcceptCallback(IAsyncResult pAr)
+        public void Receive()
         {
-            // Signal the main thread to continue.  
-            mMre.Set();
-
-            // Get the socket that handles the client request.
-            Socket listener = (Socket)pAr.AsyncState;
-            Socket clientSocket = listener.EndAccept(pAr);
-            mConnectedClients.Add(clientSocket);
-
             SocketStateObject state = new SocketStateObject();
-            state.mClientSocket = clientSocket;
-            clientSocket.BeginReceive(
-                state.mBuffer, 
-                0, 
-                SocketStateObject.mBufferSize, 
-                0, 
-                new AsyncCallback(ReadCallback),
-                state);
-        }
-        public void ReadCallback(IAsyncResult pAr)
-        {
-            string content = string.Empty;
+            
+            while (true)
+            {
+                System.Threading.Thread.Sleep(10);
+                state.mClientSocket = mConnectedClient;
 
-            SocketStateObject state = (SocketStateObject)pAr.AsyncState;
-            Socket handler = state.mClientSocket;
+                try
+                {
+                    ReadSocket(mConnectedClient, state);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(
+                        "Can't receive data from the server: {0}",
+                        e.ToString());
+                    return;
+                }
+            }
+        }
+        private void ReadSocket(Socket pSocket, SocketStateObject pStateObject)
+        {
+            string message = string.Empty;
+
+            SocketStateObject state = pStateObject;
+            Socket handler = pSocket;
 
             // Read data from the socket
             int bytesRead = 0;
             try
             {
-                bytesRead = handler.EndReceive(pAr);
+                bytesRead = pSocket.Receive(pStateObject.mBuffer);
             }
             catch(Exception e)
             {
-                Console.WriteLine(
-                    "Can't read data from remote end: {0} ", 
-                    e.ToString()
-                    );
+                Console.WriteLine("Can't read data from remote end: {0} ");
+                pSocket.Shutdown(SocketShutdown.Both);
+                pSocket.Close();
                 bytesRead = 0;
+                return;
             }
 
             if( bytesRead > 0 )
             {
-                state.mSb.Append(Encoding.ASCII.GetString(state.mBuffer, 0, bytesRead));
-                content = state.mSb.ToString();
-
-                if(content.IndexOf("<EOF>") > -1)
-                {
-                    Console.WriteLine(
-                        "Arrived {0} bytes from socket.\n Data: {1}", 
-                        content.Length, 
-                        content);
-
-                    Send(handler, content);
-                }
-                else
-                {
-                    handler.BeginReceive(
-                        state.mBuffer, 
+                pStateObject.mSb.Append(
+                    Encoding.ASCII.GetString(
+                        pStateObject.mBuffer, 
                         0, 
-                        SocketStateObject.mBufferSize, 
-                        0, 
-                        new AsyncCallback(ReadCallback), 
-                        state);
+                        bytesRead));
+
+                if (pSocket.Available > 0)
+                {
+                    ReadSocket(pSocket, pStateObject);
                 }
+
+                message = pStateObject.mSb.ToString();
+
+                    // Process with the incoming data here
+
+                    // TODO
+
+                Console.WriteLine(
+                    "Arrived {0} bytes from socket.\n Data: {1}", 
+                    message.Length, 
+                    message);
             }
         }
 
-        public void Send(Socket pHandler, string pData)
+        public void Send( string pData)
         {
-            byte[] byteData = Encoding.ASCII.GetBytes(pData);
+            
+            if (mConnectedClient.Connected)
+            {
+                byte[] byteData = Encoding.ASCII.GetBytes(pData);
 
-            pHandler.BeginSend(
-                byteData,
-                0,
-                byteData.Length,
-                0,
-                new AsyncCallback(SendCallBack),
-                pHandler);
+                mConnectedClient.BeginSend(
+                    byteData,
+                    0,
+                    byteData.Length,
+                    0,
+                    new AsyncCallback(SendCallBack),
+                    mConnectedClient);
+            }
         }
 
         public void SendCallBack(IAsyncResult pAr)
@@ -195,7 +201,7 @@ namespace InterProcessCommunication
             }
             catch( Exception e)
             {
-                Console.WriteLine("Can't send data to the client: {1}", e.ToString());
+                Console.WriteLine("Can't send data to the client.");
             }
         }
     }

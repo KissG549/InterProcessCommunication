@@ -10,18 +10,15 @@ namespace InterProcessCommunication.InterProcessCommunication
         abstract bool Connect(string pServerAddr, int pPort);
         abstract void Disconnect();
 
-        abstract void ConnectCallback(IAsyncResult pAr);
-
-        abstract void Receive(Socket pClient);
-
-        abstract void ReceiveCallback(IAsyncResult pAr);
-
-        abstract void Send(Socket pClient, string pData);
+        abstract void Receive();
+ 
+        abstract void Send(string pData);
 
         abstract void SendCallback(IAsyncResult pAr);
+
         /*
-            Properties
-         */
+Properties
+*/
         abstract bool IsConnected
         {
             get;

@@ -6,16 +6,11 @@ using System.Text.Json.Serialization;
 
 namespace InterProcessCommunication
 {
-    class DataEncoderImpl : IDataEncoder
+    class DataEncoderImpl
     {
-        public byte[] Encapsulate(string pData)
+        public string Encapsulate(string pData)
         {
-            string jsonString;
-            jsonString = JsonSerializer.Serialize(pData);
-
-            byte[] data = Encoding.Unicode.GetBytes(jsonString);
-            // TODO
-            return data;
+            return JsonSerializer.Serialize(pData); ;
         }
         public string Decapsulate(byte[] pData)
         {

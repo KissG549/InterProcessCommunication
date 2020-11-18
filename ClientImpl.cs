@@ -12,14 +12,16 @@ namespace InterProcessCommunication
         private IPEndPoint mRemoteEP;
         private Socket mSocket;
 
-        private static ManualResetEvent connectDone =
+        public ManualResetEvent mConnectDone =
             new ManualResetEvent(false);
-        private static ManualResetEvent sendDone =
+        public ManualResetEvent mSendDone =
             new ManualResetEvent(false);
-        private static ManualResetEvent receiveDone =
+        public ManualResetEvent mReceiveDone =
             new ManualResetEvent(false);
 
-        private static string response = string.Empty;
+        private string mMessage = string.Empty;
+
+        public string Response() => mMessage;
 
         public ClientImpl()
         {
@@ -38,6 +40,7 @@ namespace InterProcessCommunication
         public bool Connect(string pServerAddr, int pPort)
         {
             try 
+            
             {
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(pServerAddr);
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
@@ -50,28 +53,25 @@ namespace InterProcessCommunication
                     ProtocolType.Tcp);
 
                 // Connect to the remote endpoint.  
-                mSocket.BeginConnect(
-                    mRemoteEP,
-                    new AsyncCallback(ConnectCallback), 
-                    mSocket);
 
-                connectDone.WaitOne();
+                mSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
 
-                // Send test data to the remote device.  
-                Send(mSocket, "This is a test<EOF>");
-                sendDone.WaitOne();
+                mSocket.Connect(mRemoteEP);
 
-                // Receive the response from the remote device.  
-                Receive(mSocket);
-                receiveDone.WaitOne();
+                Console.WriteLine(
+                        "Connected to {0}",
+                        mSocket.RemoteEndPoint.ToString());
 
-                // Write the response to the console.  
-                Console.WriteLine("Response received : {0}", response);
+                if(!mSocket.Connected)
+                {
+                    return false;
+                }
 
             }
             catch (Exception e) 
             {
-                Console.WriteLine("Can't connect to the server: {0}", e.ToString());
+                Console.WriteLine("Can't connect to the server");
+                return false;
             }
 
             return true;
@@ -85,110 +85,96 @@ namespace InterProcessCommunication
             Console.WriteLine("Socket closed");
         }
 
-        public void ConnectCallback(IAsyncResult pAr)
+        public void Receive()
         {
-            try 
+            SocketStateObject state = new SocketStateObject();
+            
+            state.mClientSocket = mSocket;
+            
+            while (mSocket.Connected)
             {
-                // get the socket from the state object
-                Socket client = (Socket)pAr.AsyncState;
-
-                client.EndConnect(pAr);
-
-                Console.WriteLine(
-                    "Connected to {0}", 
-                    client.RemoteEndPoint.ToString());
-
-                // Signal that the connection has been made.  
-                connectDone.Set();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(
-                    "Can't connect to the server: {0}", 
-                    e.ToString());
-            }
-        }
-
-        public void Receive(Socket pSocket)
-        {
-            try 
-            {
-                // Create the state object.  
-                SocketStateObject state = new SocketStateObject();
-                state.mClientSocket = pSocket;
-
-                // Begin receiving the data from the remote device.  
-                pSocket.BeginReceive(
-                    state.mBuffer,
-                    0,
-                    SocketStateObject.mBufferSize, 
-                    0,
-                    new AsyncCallback(ReceiveCallback), 
-                    state);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(
-                    "Can't receive data from the server: {0}",
-                    e.ToString());
-            }
-        }
-
-        public void ReceiveCallback(IAsyncResult pAr)
-        {
-            try 
-            {
-                SocketStateObject state = (SocketStateObject)pAr.AsyncState;
-                Socket client = state.mClientSocket;
-
-                int bytesRead = client.EndReceive(pAr);
-
-                if(bytesRead > 0)
+                Thread.Sleep(10);
+                
+                try
                 {
-                    // Store the received data
-                    state.mSb.Append(
-                        Encoding.ASCII.GetString(
-                            state.mBuffer, 
-                            0, 
-                            bytesRead));
-
-                    client.BeginReceive(
-                        state.mBuffer,
-                        0,
-                        SocketStateObject.mBufferSize,
-                        0,
-                        new AsyncCallback(ReceiveCallback),
-                        state);
-                }
-                else 
-                {
-                    if(state.mSb.Length>1)
+                    if (mSocket.Available > 0)
                     {
-                        response = state.mSb.ToString();
+                        state.mSb.Clear();
+
+                        // Create the state object.  
+                        ReadSocket(mSocket, state);
                     }
-                    // Signal that all bytes have been received.  
-                    receiveDone.Set();
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(
-                    "Can't receive data from the server: {0}",
-                    e.ToString());
+                catch(System.Net.Sockets.SocketException e)
+                {
+                    Console.WriteLine("Socket Exception, quit");
+                    return;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Can't receive data from the server: {0}");
+                    return;
+                }
             }
         }
 
-        public void Send(Socket pClient, string pData)
+        private void ReadSocket(Socket pSocket, SocketStateObject pStateObject)
+        {
+            try
+            {
+                int bytesRead = pSocket.Receive(pStateObject.mBuffer);
+                
+                if (bytesRead > 0)
+                {
+                    pStateObject.mSb.Append(
+                           Encoding.ASCII.GetString(
+                               pStateObject.mBuffer,
+                               0,
+                               bytesRead));
+                    if ( pSocket.Available > 0)
+                    {
+                        ReadSocket(pSocket, pStateObject);
+                    }
+                }
+
+                if (pStateObject.mSb.Length > 1)
+                {
+                    mMessage = pStateObject.mSb.ToString();
+
+                    // Process with the incoming data here
+
+                    // TODO
+
+                    Console.WriteLine(
+                         "Arrived {0} bytes from socket.\n Data: {1}",
+                         mMessage.Length,
+                         mMessage);
+                }
+            
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Can't receive data from the server.");
+
+            }
+        }
+         public void Send(string pData)
         {
             byte[] byteData = Encoding.ASCII.GetBytes(pData);
 
-            pClient.BeginSend(
-                byteData,
-                0,
-                byteData.Length,
-                0,
-                new AsyncCallback(SendCallback),
-                pClient);
+            try { 
+                mSocket.BeginSend(
+                    byteData,
+                    0,
+                    byteData.Length,
+                    0,
+                    new AsyncCallback(SendCallback),
+                    mSocket);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Can't send data to the server");
+            }
         }
 
         public void SendCallback(IAsyncResult pAr)
@@ -203,13 +189,12 @@ namespace InterProcessCommunication
                     bytesSent);
 
                 // Signal that all bytes have been sent.
-                sendDone.Set();
+                mSendDone.Set();
             }
             catch (Exception e)
             {
                 Console.WriteLine(
-                    "Can't send data to the server: {0}",
-                    e.ToString());
+                    "Can't send data to the server");
             }
         }
 
