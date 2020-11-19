@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "InterProcessCommunication": {
-      "commandName": "Project",
-      "commandLineArgs": "-s 3001",
-      "nativeDebugging": true
-    }
-  }
-}
