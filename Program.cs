@@ -46,7 +46,7 @@ namespace InterProcessCommunication
                     while(! client.Connect(host, Int32.Parse(port)) )
                     {
                         Console.WriteLine("Trying to connect...");
-                        System.Threading.Thread.Sleep(1000);
+                        Thread.Sleep(1000);
                     }
                 }
                 catch (Exception e)
@@ -63,23 +63,6 @@ namespace InterProcessCommunication
                     DataEncoderImpl.SendRandomSampleData(client.Send);
                     DataEncoderImpl.SendSampleDataFromConsole(client.Send);
 
-                    //while (true)
-                    //{
-                    //    // read input from the console
-                    //    Console.WriteLine("Write message here (press enter to send): ");
-                    //    string inputText = Console.ReadLine();
-                        
-                    //    if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
-                    //    {
-                    //        break;
-                    //    }
-                    //    else
-                    //    {
-                    //        // send it to the server
-                    //        client.Send(inputText);
-                    //    }
-                    //    // send it to the server
-                    //}
                 }
             }
             else if( args[0] == "-s" )
@@ -99,21 +82,6 @@ namespace InterProcessCommunication
 
                 Thread serverReceiveTH = new Thread(server.Receive);
                 serverReceiveTH.Start();
-
-                // Read input from console
-                //while (true)
-                //{
-                //    Console.WriteLine("Write message here (press enter to send or :x Exit): ");
-                //    string inputText = Console.ReadLine();
-                //    if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
-                //    {
-                //        break;
-                //    }
-                //    else
-                //    {
-                //        server.Send(inputText);
-                //    }
-                //}
 
                 DataEncoderImpl.SendSampleData(server.Send);
                 DataEncoderImpl.SendRandomSampleData(server.Send);
