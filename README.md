@@ -11,15 +11,15 @@ Run in client mode use the *-c* switch with the *server address* and the *port n
 
 	'''
     InterProcessCommunication.exe -c 127.0.0.1:3001
-    '''
+    
     or
-    '''
+
     InterProcessCommunication.exe -c localhost:3001
-    '''
+    
     or
-    '''
+    
     InterProcessCommunication.exe -c myserver.local:3001
-    '''
+    
     
     
 
