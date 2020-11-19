@@ -2,8 +2,18 @@
  
 ##  Build and run the system
 
-// TODO
+### Prerequisites
+
+    Dotnet core SDK 3.1
+    https://dotnet.microsoft.com/download/dotnet-core/thank-you/sdk-3.1.404-windows-x64-installer
+
+### Download
+
+    git clone https://github.com/KissG549/InterProcessCommunication.git
+
 ### Build
+
+    dotnet build    
 
 ### Run
 
