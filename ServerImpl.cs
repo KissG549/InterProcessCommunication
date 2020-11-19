@@ -31,11 +31,6 @@ namespace InterProcessCommunication
 
     class ServerImpl : IServer
     {
-        /*
-            mre is used to block and release threads manually
-         */
-        public ManualResetEvent mMre = new ManualResetEvent(false);
-
         private Socket mConnectedClient;
 
         ~ServerImpl()
