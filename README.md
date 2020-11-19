@@ -31,6 +31,8 @@ Print help
 
     InterProcessCommunication.exe ?
 
+**!!!You have to run a server and also a client!!!**
+
 ## What the system does
 
  * The system is able to connect to a server and exchange information via *TCP socket/Json* bidirectionaly.
@@ -78,8 +80,21 @@ Print help
 
 ### System strengths
 
-// TODO
+    * Non-blocking message processing, running on independent Thread
+    * Objects can be easily serialize with Json
+    * Send data in Json format, simple to implement and modify
+    * Can easily add new objects to the serialization
+    * Works with multiple objects at the same time
+    * Client-server mode, participants can be on the same machine or on different network either (with some restrictions)
+    * Using TCP, which is reliable
+    * Bidirectional data exchange
 
 ### System weaknesses
 
-// TODO
+    * Handles one connection 
+    * Thread signaling not used in this implementation
+    * Data types should be the same on the server and the client side to being convertable
+    * Variable names are used for the serialization and deserialization
+    * Network communication is not encrypted
+    * TCP could be slower than UDP
+    * Need to restart the both end if the connection lost
