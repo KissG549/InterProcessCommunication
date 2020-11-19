@@ -35,7 +35,11 @@ To run in server mode use the *-s* switch with the *listening IP* and *port numb
 
     or 
 
-    InterProcessCommunication.exe -s 127.0.0.1 3001 \\ will listen on localhost:3001
+    InterProcessCommunication.exe -s 127.0.0.1 3001 \\ will listen on 127.0.0.1:3001
+    
+    or
+
+    InterProcessCommunication.exe -s 192.168.1.100 3001 \\ will listen on 192.168.1.100:3001
     
 Print help
 
