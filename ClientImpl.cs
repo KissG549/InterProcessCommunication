@@ -5,9 +5,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Text;
 using System.Text.Json;
-using System.Runtime.Serialization;
-using Newtonsoft.Json.Linq;
-using System.IO;
 
 namespace InterProcessCommunication
 {
@@ -44,7 +41,6 @@ namespace InterProcessCommunication
         public bool Connect(string pServerAddr, int pPort)
         {
             try 
-            
             {
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(pServerAddr);
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
@@ -164,7 +160,7 @@ namespace InterProcessCommunication
 
             }
         }
-         public void Send(string pData)
+         public int Send(string pData)
         {
             byte[] byteData = Encoding.ASCII.GetBytes(pData);
 
@@ -181,6 +177,7 @@ namespace InterProcessCommunication
             {
                 Console.WriteLine("Can't send data to the server");
             }
+            return byteData.Length;
         }
 
         public void SendCallback(IAsyncResult pAr)
@@ -204,26 +201,6 @@ namespace InterProcessCommunication
             }
         }
 
-        public void sendSampleData()
-        {
-            Person samplePerson = new Person
-            {
-                Name = "First Person",
-                Age = 30,
-                Height = 170
-            };
-
-            Knowledge sampleKnowledge = new Knowledge
-            {
-                MotivationLevel = 11,
-                Background = 8,
-                ExperienceLevel = 10
-            };
-
-            string jsonString = JsonSerializer.Serialize( new { samplePerson, sampleKnowledge });
-
-            Console.WriteLine(JsonSerializer.Serialize(samplePerson));
-            Send(jsonString);
-        }
+       
     }
 }
