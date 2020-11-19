@@ -12,7 +12,7 @@ namespace InterProcessCommunication.InterProcessCommunication
 
         abstract void Receive();
  
-        abstract void Send(string pData);
+        abstract int Send(string pData);
 
         abstract void SendCallback(IAsyncResult pAr);
 
