@@ -39,8 +39,10 @@ namespace InterProcessCommunication
                     {
                         throw new ArgumentException("Invalid host:port format");
                     }
+
                     string host = args[1].Substring(0, colonIndex);
                     string port = args[1].Substring(colonIndex + 1);
+
                     while(! client.Connect(host, Int32.Parse(port)) )
                     {
                         Console.WriteLine("Trying to connect...");
@@ -57,25 +59,27 @@ namespace InterProcessCommunication
                     Thread clientReceiveTH = new Thread(client.Receive);
                     clientReceiveTH.Start();
 
-                    client.sendSampleData();
+                    DataEncoderImpl.SendSampleData(client.Send);
+                    DataEncoderImpl.SendRandomSampleData(client.Send);
+                    DataEncoderImpl.SendSampleDataFromConsole(client.Send);
 
-                    while (true)
-                    {
-                        // read input from the console
-                        Console.WriteLine("Write message here (press enter to send): ");
-                        string inputText = Console.ReadLine();
+                    //while (true)
+                    //{
+                    //    // read input from the console
+                    //    Console.WriteLine("Write message here (press enter to send): ");
+                    //    string inputText = Console.ReadLine();
                         
-                        if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            // send it to the server
-                            client.Send(inputText);
-                        }
-                        // send it to the server
-                    }
+                    //    if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
+                    //    {
+                    //        break;
+                    //    }
+                    //    else
+                    //    {
+                    //        // send it to the server
+                    //        client.Send(inputText);
+                    //    }
+                    //    // send it to the server
+                    //}
                 }
             }
             else if( args[0] == "-s" )
@@ -97,21 +101,23 @@ namespace InterProcessCommunication
                 serverReceiveTH.Start();
 
                 // Read input from console
-                while (true)
-                {
-                    Console.WriteLine("Write message here (press enter to send or :x Exit): ");
-                    string inputText = Console.ReadLine();
-                    if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        server.Send(inputText);
-                    }
-                }
+                //while (true)
+                //{
+                //    Console.WriteLine("Write message here (press enter to send or :x Exit): ");
+                //    string inputText = Console.ReadLine();
+                //    if (inputText.Length >= 2 && (inputText[0] == ':' && inputText[1] == 'x'))
+                //    {
+                //        break;
+                //    }
+                //    else
+                //    {
+                //        server.Send(inputText);
+                //    }
+                //}
 
-                server.sendSampleData();
+                DataEncoderImpl.SendSampleData(server.Send);
+                DataEncoderImpl.SendRandomSampleData(server.Send);
+                DataEncoderImpl.SendSampleDataFromConsole(server.Send);
             }
             else
             {
