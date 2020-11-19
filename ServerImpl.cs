@@ -173,13 +173,12 @@ namespace InterProcessCommunication
             }
         }
 
-        public void Send( string pData)
+        public int Send( string pData)
         {
             
+            byte[] byteData = Encoding.ASCII.GetBytes(pData);
             if (mConnectedClient.Connected)
             {
-                byte[] byteData = Encoding.ASCII.GetBytes(pData);
-
                 mConnectedClient.BeginSend(
                     byteData,
                     0,
@@ -188,6 +187,7 @@ namespace InterProcessCommunication
                     new AsyncCallback(SendCallBack),
                     mConnectedClient);
             }
+            return byteData.Length;
         }
 
         public void SendCallBack(IAsyncResult pAr)
@@ -206,26 +206,5 @@ namespace InterProcessCommunication
             }
         }
 
-        public void sendSampleData()
-        {
-            Person samplePerson = new Person
-            {
-                Name = "Second Person",
-                Age = 40,
-                Height = 180
-            };
-
-            Knowledge sampleKnowledge = new Knowledge
-            {
-                MotivationLevel = 15,
-                Background = 6,
-                ExperienceLevel = 14
-            };
-
-            string jsonString = JsonSerializer.Serialize(new { sampleKnowledge, samplePerson });
-
-            Console.WriteLine(JsonSerializer.Serialize(samplePerson));
-            Send(jsonString);
-        }
     }
 }
