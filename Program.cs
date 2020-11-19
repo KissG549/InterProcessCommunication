@@ -62,7 +62,6 @@ namespace InterProcessCommunication
                     DataEncoderImpl.SendSampleData(client.Send);
                     DataEncoderImpl.SendRandomSampleData(client.Send);
                     DataEncoderImpl.SendSampleDataFromConsole(client.Send);
-
                 }
             }
             else if( args[0] == "-s" )
