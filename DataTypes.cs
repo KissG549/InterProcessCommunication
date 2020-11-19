@@ -7,40 +7,46 @@ namespace InterProcessCommunication
     [System.Runtime.Serialization.DataContract]
     class Person
     {
-        [System.Runtime.Serialization.DataMember]
         public string Name { get; set; }
-        [System.Runtime.Serialization.DataMember]
         public int Age { get; set; }
 
-        [System.Runtime.Serialization.DataMember]
         public int Height { get; set; }
 
         public void Print()
         {
             Console.WriteLine(
-                "Name: {0}\nAge: {1}\nHeight: {2}"
-                , Name, Age, Height);
+                "######################\nPERSON\n######################\nName: {0}\nAge: {1}\nHeight: {2}\n----------------------",
+                Name, Age, Height);
         }
     }
 
-    [System.Runtime.Serialization.DataContract]
     class Knowledge
     {
-        [System.Runtime.Serialization.DataMember]
         public int MotivationLevel { get; set; }
-
-        [System.Runtime.Serialization.DataMember]
 
         public int Background { get; set; }
 
-        [System.Runtime.Serialization.DataMember]
         public int ExperienceLevel { get; set; }
 
         public void Print()
         {
             Console.WriteLine(
-                "MotivationLevel: {0}\nBackground: {1}\nExperienceLevel: {2}"
-                , MotivationLevel, Background, ExperienceLevel);
+                "######################\nKNOWLEDGE\n######################\nMotivationLevel: {0}\nBackground: {1}\nExperienceLevel: {2}\n----------------------",
+                MotivationLevel, Background, ExperienceLevel);
+        }
+    }
+
+    class EnvironmentDetails
+    {
+        public string StationName { get; set; }
+        public int Temperature { get; set; }
+        public int Humidity { get; set; }
+
+        public void Print()
+        {
+            Console.WriteLine(
+                "######################\nENVIRONMENT DETAILS\n######################\nStation name: {0}\nTemperature: {1}\nHumidity: {2}\n----------------------",
+                StationName, Temperature, Humidity);
         }
     }
 
