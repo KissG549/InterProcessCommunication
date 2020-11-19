@@ -12,14 +12,6 @@ namespace InterProcessCommunication
     {
         private IPEndPoint mRemoteEP;
         private Socket mSocket;
-
-        public ManualResetEvent mConnectDone =
-            new ManualResetEvent(false);
-        public ManualResetEvent mSendDone =
-            new ManualResetEvent(false);
-        public ManualResetEvent mReceiveDone =
-            new ManualResetEvent(false);
-
         private string mMessage = string.Empty;
 
         public string Response() => mMessage;
@@ -190,9 +182,6 @@ namespace InterProcessCommunication
                 Console.WriteLine(
                     "Sent {0} bytes to server.", 
                     bytesSent);
-
-                // Signal that all bytes have been sent.
-                mSendDone.Set();
             }
             catch (Exception e)
             {
