@@ -8,7 +8,7 @@ namespace InterProcessCommunication
         static void printUsage()
         {
             Console.WriteLine(
-                "This program purpose is to demonstrate data exchange between two processes using bidirectional communication.\n" +
+                "The purpose of this program is to demonstrate data exchange between two processes using bidirectional communication.\n" +
                 "Implemented data exchange method: Socket-JSON over TCP\n\n" +
                 "Usage:\n" +
                 "\t-c server_host:port_number\t\tRun in client mode, connect to the specific address:port" +
