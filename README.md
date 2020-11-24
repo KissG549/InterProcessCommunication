@@ -89,6 +89,13 @@ Print help
     * Based on random generated data
     * Based on user provided data
 
+# Docker support
+
+## Build docker image
+
+    docker build -t counter-image -f Dockerfile .
+
+## Run the client and the server on the same image with **docker-compose**
 
 ## Outline
 
