@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  servicesrv:
+    image: ${DOCKER_REGISTRY-}interprocesscommunication
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks: 
+      ipc_app_network:
+        ipv4_address: 172.31.255.2
+  serviceclnt:
+    build:
+      dockerfile: DockerfileClient
+      context: .
+    networks: 
+      ipc_app_network:
+        ipv4_address: 172.31.255.3
+networks:
+  ipc_app_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.31.255.0/24
+          gateway: 172.31.255.1
