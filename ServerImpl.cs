@@ -46,7 +46,7 @@ namespace InterProcessCommunication
             /*
                 Set default binding address
              */
-            if( pIPAddress.Length < 7 )
+            if( pIPAddress.Length < 1 )
             {
                 pIPAddress = "127.0.0.1";
             }
@@ -54,8 +54,30 @@ namespace InterProcessCommunication
                 Attach the program to a local socket
              */
             IPHostEntry hostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = IPAddress.Parse(pIPAddress);
+
+            IPAddress ipAddress = IPAddress.Loopback;
+
+            if (Uri.CheckHostName(pIPAddress) == UriHostNameType.Dns)
+            {
+                var hostAddressArr = Dns.GetHostEntry(pIPAddress);
+
+                if (hostAddressArr.AddressList.Length > 0)
+                {
+                    ipAddress = hostAddressArr.AddressList[0];
+                }
+                else 
+                {
+                    Console.WriteLine("Can't resolve hostname to IP, {0}", pIPAddress);
+                }
+            }
+            else
+            {
+                ipAddress = IPAddress.Parse(pIPAddress);
+            }
+
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, pPortNumber);
+
+            Console.WriteLine("Creating TCP socket on {0}:{1}", ipAddress, pPortNumber);
 
             Socket listener = 
                 new Socket(
