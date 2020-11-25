@@ -34,8 +34,17 @@ namespace InterProcessCommunication
         {
             try 
             {
-                IPHostEntry ipHostInfo = Dns.GetHostEntry(pServerAddr);
-                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                IPAddress ipAddress = IPAddress.Loopback;
+                if(Uri.CheckHostName(pServerAddr) == UriHostNameType.Dns)
+                {
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(pServerAddr);
+                    ipAddress = ipHostInfo.AddressList[0];
+                }
+                else
+                {
+                    ipAddress = IPAddress.Parse(pServerAddr);
+                }
+
                 mRemoteEP = new IPEndPoint(ipAddress, pPort);
 
                 // Create a TCP/IP socket.  
@@ -62,7 +71,7 @@ namespace InterProcessCommunication
             }
             catch (Exception e) 
             {
-                Console.WriteLine("Can't connect to the server");
+                Console.WriteLine("Can't connect to the server {0}:{1}", mRemoteEP.Address, mRemoteEP.Port);
                 return false;
             }
 

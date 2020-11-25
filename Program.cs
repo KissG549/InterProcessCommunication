@@ -45,7 +45,7 @@ namespace InterProcessCommunication
 
                     while(! client.Connect(host, Int32.Parse(port)) )
                     {
-                        Console.WriteLine("Trying to connect...");
+                        Console.WriteLine("Trying to connect to {0}:{1}...",host, port);
                         Thread.Sleep(1000);
                     }
                 }
@@ -61,7 +61,7 @@ namespace InterProcessCommunication
 
                     DataEncoderImpl.SendSampleData(client.Send);
                     DataEncoderImpl.SendRandomSampleData(client.Send);
-                    DataEncoderImpl.SendSampleDataFromConsole(client.Send);
+                    //DataEncoderImpl.SendSampleDataFromConsole(client.Send);
                 }
             }
             else if( args[0] == "-s" )
@@ -84,7 +84,7 @@ namespace InterProcessCommunication
 
                 DataEncoderImpl.SendSampleData(server.Send);
                 DataEncoderImpl.SendRandomSampleData(server.Send);
-                DataEncoderImpl.SendSampleDataFromConsole(server.Send);
+                //DataEncoderImpl.SendSampleDataFromConsole(server.Send);
             }
             else
             {

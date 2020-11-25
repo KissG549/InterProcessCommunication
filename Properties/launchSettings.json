@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "InterProcessCommunication": {
+      "commandName": "Docker"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
