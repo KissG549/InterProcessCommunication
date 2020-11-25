@@ -89,13 +89,13 @@ Print help
     * Based on random generated data
     * Based on user provided data
 
-# Docker support
+# Docker-compose support
 
-## Build docker image
+    Build:
+    '''docker-compose build'''
 
-    docker build -t counter-image -f Dockerfile .
-
-## Run the client and the server on the same image with **docker-compose**
+    Run:
+    '''docker-compose up'''
 
 ## Outline
 
