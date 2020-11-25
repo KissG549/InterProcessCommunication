@@ -15,7 +15,7 @@ services:
         ipv4_address: 172.31.255.253       
     build:
       context: .
-      dockerfile: DockerfileClient
+      dockerfile: DockerfileClientService
 networks:
   ipc_network:
     driver: bridge
