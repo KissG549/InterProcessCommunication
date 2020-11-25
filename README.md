@@ -118,7 +118,7 @@ Docker:
        * Print the incoming messages and the converted objects
    * Send **pre-defined data** to the server
    * Send **random generated data** to the server
-   * **Wait for user provided data** from the console
+   * ~~**Wait for user provided data** from the console~~
        * ~~Send user provided data to the server~~
 * As server
    * Listen on specific address and port
@@ -129,7 +129,7 @@ Docker:
        * Print the incoming messages and the converted objects
    * Send **pre-defined data** to the client
    * Send **random generated data** to the client
-   * **Wait for user provided data** from the console
+   * ~~**Wait for user provided data** from the console~~
        * ~~Send user provided data to the client~~
 
 ### How does it works?
