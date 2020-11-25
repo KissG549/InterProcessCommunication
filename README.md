@@ -78,7 +78,7 @@ Docker:
     OS/Arch:           windows/amd64
     Experimental:      false
 
-   Server: Docker Engine - Community
+    Server: Docker Engine - Community
     Engine:
      Version:          19.03.13
      API version:      1.40 (minimum version 1.12)
