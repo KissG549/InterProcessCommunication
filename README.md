@@ -50,17 +50,17 @@ Print help
 # Run with Docker-compose
 
 
-    Build:
-        ```
-        docker-compose build
-        ```
+Build:
+```
+docker-compose build
+```
 
-    Run:
-        ```
-        docker-compose up
-        ```
+Run:
+```
+docker-compose up
+```
 
-  Created and tested with:
+Created and tested with:
 
      Docker-compose:
          ```
