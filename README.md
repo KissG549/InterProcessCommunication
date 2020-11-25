@@ -92,10 +92,16 @@ Print help
 # Docker-compose support
 
     Build:
-    '''docker-compose build'''
+
+    '''
+    docker-compose build
+    '''
 
     Run:
-    '''docker-compose up'''
+
+    '''
+    docker-compose up
+    '''
 
 ## Outline
 
