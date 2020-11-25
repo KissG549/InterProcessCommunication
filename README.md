@@ -153,6 +153,7 @@ Docker:
 * Client-server mode, participants can be on the same machine or on different network either (with some restrictions)
 * Using TCP, which is reliable
 * Bidirectional data exchange
+* Support docker-composer
 
 ### System weaknesses
 
@@ -163,4 +164,4 @@ Docker:
 * Network communication is not encrypted
 * TCP could be slower than UDP
 * Need to restart the both end if the connection lost
-* ~~Doesn't support containerization/virtualization yet~~ Support docker-composer
+* ~~Doesn't support containerization/virtualization yet~~ 
