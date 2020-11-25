@@ -21,11 +21,11 @@ To run in client mode use the *-c* switch with the *server address* and the *por
     
     InterProcessCommunication.exe -c 127.0.0.1:3001
     
-    or
+        [or]
 
     InterProcessCommunication.exe -c localhost:3001
     
-    or
+        [or]
     
     InterProcessCommunication.exe -c myserver.local:3001
     
@@ -33,11 +33,11 @@ To run in server mode use the *-s* switch with the *listening IP* and *port numb
 
     InterProcessCommunication.exe -s 3001   \\ will listen on localhost:3001
 
-    or 
+        [or] 
 
     InterProcessCommunication.exe -s 127.0.0.1 3001 \\ will listen on 127.0.0.1:3001
     
-    or
+        [or]
 
     InterProcessCommunication.exe -s 192.168.1.100 3001 \\ will listen on 192.168.1.100:3001
     
@@ -49,15 +49,55 @@ Print help
 
 # Run with Docker-compose
 
+
     Build:
-        
-    **docker-compose build**
-    
+        ```
+        docker-compose build
+        ```
 
     Run:
+        ```
+        docker-compose up
+        ```
 
-    **docker-compose up**
-    
+  Created and tested with:
+
+     Docker-compose:
+         ```
+         docker-compose version 1.27.4, build 40524192
+         ```
+
+     Docker:
+         ```
+         Client: Docker Engine - Community
+         Cloud integration: 1.0.2
+         Version:           19.03.13
+         API version:       1.40
+         Go version:        go1.13.15
+         Git commit:        4484c46d9d
+         Built:             Wed Sep 16 17:00:27 2020
+         OS/Arch:           windows/amd64
+         Experimental:      false
+
+        Server: Docker Engine - Community
+         Engine:
+          Version:          19.03.13
+          API version:      1.40 (minimum version 1.12)
+          Go version:       go1.13.15
+          Git commit:       4484c46d9d
+          Built:            Wed Sep 16 17:07:04 2020
+          OS/Arch:          linux/amd64
+          Experimental:     false
+         containerd:
+          Version:          v1.3.7
+          GitCommit:        8fba4e9a7d01810a393d5d25a3621dc101981175
+         runc:
+          Version:          1.0.0-rc10
+          GitCommit:        dc9208a3303feef5b3839f4323d9beb36df0a9dd
+         docker-init:
+          Version:          0.18.0
+          GitCommit:        fec3683
+        ```
 
 ## Outline
 
@@ -124,4 +164,4 @@ Print help
     * Network communication is not encrypted
     * TCP could be slower than UDP
     * Need to restart the both end if the connection lost
-    * Doesn't support containerization/virtualization yet
+    * ~~Doesn't support containerization/virtualization yet~~ Support docker-composer
