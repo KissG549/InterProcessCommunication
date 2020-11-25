@@ -47,6 +47,20 @@ Print help
 
 **!!!You have to run a server and also a client!!!**
 
+# Run with Docker-compose
+
+    Build:
+        
+    **docker-compose build**
+    
+
+    Run:
+
+    **docker-compose up**
+    
+
+## Outline
+
 ## What the system does
 
  * The system is able to connect to a server and exchange information via *TCP socket/Json* bidirectionaly.
@@ -89,21 +103,6 @@ Print help
     * Based on random generated data
     * Based on user provided data
 
-# Docker-compose support
-
-    Build:
-
-    '''
-    docker-compose build
-    '''
-
-    Run:
-
-    '''
-    docker-compose up
-    '''
-
-## Outline
 
 ### System strengths
 
