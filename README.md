@@ -145,14 +145,14 @@ Docker:
 
 ### System strengths
 
-    * Non-blocking message processing, running on independent Thread
-    * Objects can be easily serialize with Json
-    * Send data in Json format, simple to implement and modify
-    * Can easily add new objects to the serialization
-    * Works with multiple objects at the same time
-    * Client-server mode, participants can be on the same machine or on different network either (with some restrictions)
-    * Using TCP, which is reliable
-    * Bidirectional data exchange
+* Non-blocking message processing, running on independent Thread
+* Objects can be easily serialize with Json
+* Send data in Json format, simple to implement and modify
+* Can easily add new objects to the serialization
+* Works with multiple objects at the same time
+* Client-server mode, participants can be on the same machine or on different network either (with some restrictions)
+* Using TCP, which is reliable
+* Bidirectional data exchange
 
 ### System weaknesses
 
