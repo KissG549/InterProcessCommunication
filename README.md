@@ -63,12 +63,11 @@ docker-compose up
 Created and tested with:
 
 Docker-compose:
-    ```
+
     docker-compose version 1.27.4, build 40524192
-    ```
 
 Docker:
-    ```
+
     Client: Docker Engine - Community
     Cloud integration: 1.0.2
     Version:           19.03.13
@@ -97,7 +96,7 @@ Docker:
     docker-init:
      Version:          0.18.0
      GitCommit:        fec3683
-        ```
+
 
 ## Outline
 
