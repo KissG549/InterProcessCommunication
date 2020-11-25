@@ -156,11 +156,11 @@ Docker:
 
 ### System weaknesses
 
-    * Handles one connection 
-    * Thread signaling not used in this implementation
-    * Data types should be the same on the server and the client side to being convertable
-    * Variable names are used for the serialization and deserialization
-    * Network communication is not encrypted
-    * TCP could be slower than UDP
-    * Need to restart the both end if the connection lost
-    * ~~Doesn't support containerization/virtualization yet~~ Support docker-composer
+* Handles one connection 
+* Thread signaling not used in this implementation
+* Data types should be the same on the server and the client side to being convertable
+* Variable names are used for the serialization and deserialization
+* Network communication is not encrypted
+* TCP could be slower than UDP
+* Need to restart the both end if the connection lost
+* ~~Doesn't support containerization/virtualization yet~~ Support docker-composer
