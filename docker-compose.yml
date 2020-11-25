@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   interprocesscommunication:
-    image: ${DOCKER_REGISTRY-}interprocesscommunication
+    image: interprocesscommunication
     networks:
       ipc_network:
         ipv4_address: 172.31.255.254
@@ -10,6 +10,7 @@ services:
       context: .
       dockerfile: Dockerfile
   serviceclnt:
+    image: interprocesscommunication
     networks:
       ipc_network:
         ipv4_address: 172.31.255.253       
