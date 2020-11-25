@@ -102,35 +102,35 @@ Docker:
 
 ## What the system does
 
- * The system is able to connect to a server and exchange information via *TCP socket/Json* bidirectionaly.
- * Can also act as server
- * Process messages asynchronously
- * If you disconnected, you need to restart both end
+* The system is able to connect to a server and exchange information via *TCP socket/Json* bidirectionaly.
+* Can also act as server
+* Process messages asynchronously
+* If you disconnected, you need to restart both end
 
 ## What will happend when I start the program?
 
- * Start the appropriate mode, *client* or *server*
- * As client
-    * Try to connect to the specific server
-    * Start a receive thread to process the incoming messages independetly
-        * Deserialize incoming message
-        * Convert them into objects
-        * Print the incoming messages and the converted objects
-    * Send **pre-defined data** to the server
-    * Send **random generated data** to the server
-    * **Wait for user provided data** from the console
-        * Send user provided data to the server
- * As server
-    * Listen on specific address and port
-    * Wait for incoming connection
-        * Start a receive thread to process the incoming messages independetly
-        * Deserialize incoming message
-        * Convert them into objects
-        * Print the incoming messages and the converted objects
-    * Send **pre-defined data** to the client
-    * Send **random generated data** to the client
-    * **Wait for user provided data** from the console
-        * Send user provided data to the client
+* Start the appropriate mode, *client* or *server*
+* As client
+   * Try to connect to the specific server
+   * Start a receive thread to process the incoming messages independetly
+       * Deserialize incoming message
+       * Convert them into objects
+       * Print the incoming messages and the converted objects
+   * Send **pre-defined data** to the server
+   * Send **random generated data** to the server
+   * **Wait for user provided data** from the console
+       * ~~Send user provided data to the server~~
+* As server
+   * Listen on specific address and port
+   * Wait for incoming connection
+       * Start a receive thread to process the incoming messages independetly
+       * Deserialize incoming message
+       * Convert them into objects
+       * Print the incoming messages and the converted objects
+   * Send **pre-defined data** to the client
+   * Send **random generated data** to the client
+   * **Wait for user provided data** from the console
+       * ~~Send user provided data to the client~~
 
 ### How does it works?
 
@@ -140,7 +140,7 @@ Docker:
  * Send sample data from the main thread - async
     * Based on pre-defined data
     * Based on random generated data
-    * Based on user provided data
+    * ~~Based on user provided data~~
 
 
 ### System strengths
