@@ -1,5 +1,4 @@
-﻿using InterProcessCommunication.InterProcessCommunication;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -8,7 +7,7 @@ using System.Text.Json;
 
 namespace InterProcessCommunication
 {
-    internal class ClientImpl : IClient
+    internal class ClientImpl
     {
         private IPEndPoint mRemoteEP;
         private Socket mSocket;

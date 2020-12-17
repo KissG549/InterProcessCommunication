@@ -29,7 +29,7 @@ namespace InterProcessCommunication
         public Socket mClientSocket = null;
     }
 
-    class ServerImpl : IServer
+    class ServerImpl
     {
         private Socket mConnectedClient;
 
