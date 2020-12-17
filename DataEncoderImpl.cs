@@ -46,41 +46,42 @@ namespace InterProcessCommunication
 
         }
 
-        public static void SendSampleDataFromConsole(Func<string, int> SendFunction)
-        {
-            Console.WriteLine("Data exchange from console. Please provide the required informations!");
+        // Example data read from console:
+        //public static void SendSampleDataFromConsole(Func<string, int> SendFunction)
+        //{
+        //    Console.WriteLine("Data exchange from console. Please provide the required informations!");
 
-            EnvironmentDetails sampleEnvironment = new EnvironmentDetails
-            {
-                StationName = "SampleDevice",
-                Temperature = 25,
-                Humidity = 42
-            };
+        //    EnvironmentDetails sampleEnvironment = new EnvironmentDetails
+        //    {
+        //        StationName = "SampleDevice",
+        //        Temperature = 25,
+        //        Humidity = 42
+        //    };
 
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Enter Station name (text): ");
-                    sampleEnvironment.StationName = Console.ReadLine();
-                    Console.Write("Enter Temperature value (only numbers accepted): ");
-                    sampleEnvironment.Temperature = Int32.Parse(Console.ReadLine());
-                    Console.Write("Enter Humidity value (only numbers accepted: ");
-                    sampleEnvironment.Humidity = Int32.Parse(Console.ReadLine());
-                    break;
-                }catch (Exception e)
-                {
-                    Console.WriteLine("Wrong input parameters! Provide valid name, temp and humidity values!");
-                }
-            }
+        //    while (true)
+        //    {
+        //        try
+        //        {
+        //            Console.Write("Enter Station name (text): ");
+        //            sampleEnvironment.StationName = Console.ReadLine();
+        //            Console.Write("Enter Temperature value (only numbers accepted): ");
+        //            sampleEnvironment.Temperature = Int32.Parse(Console.ReadLine());
+        //            Console.Write("Enter Humidity value (only numbers accepted: ");
+        //            sampleEnvironment.Humidity = Int32.Parse(Console.ReadLine());
+        //            break;
+        //        }catch (Exception e)
+        //        {
+        //            Console.WriteLine("Wrong input parameters! Provide valid name, temp and humidity values!");
+        //        }
+        //    }
 
-            sampleEnvironment.Print();
+        //    sampleEnvironment.Print();
 
-            string jsonString = JsonSerializer.Serialize(new { sampleEnvironment });
+        //    string jsonString = JsonSerializer.Serialize(new { sampleEnvironment });
 
-            Console.WriteLine(JsonSerializer.Serialize(jsonString));
-            SendFunction(jsonString);
-        }
+        //    Console.WriteLine(JsonSerializer.Serialize(jsonString));
+        //    SendFunction(jsonString);
+        //}
 
         public static void SendSampleData(Func<string, int> SendFunction)
         {
