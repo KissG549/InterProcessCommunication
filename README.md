@@ -164,4 +164,4 @@ Docker:
 * Network communication is not encrypted
 * TCP could be slower than UDP
 * Need to restart the both end if the connection lost
-* ~~Doesn't support containerization/virtualization yet~~ 
+* Support basic virtualisation
